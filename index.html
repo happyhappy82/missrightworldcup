@@ -138,11 +138,17 @@ body {
   border: 2px solid #222;
 }
 
-.preview-item img,
-.preview-item video {
+.preview-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.preview-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
 }
 
 .preview-item .remove-btn {
@@ -518,11 +524,17 @@ body {
 .ranking-item { text-align: center; }
 .ranking-item .rank { font-size: 0.8rem; color: #aaa; margin-bottom: 4px; }
 
-.ranking-item img,
-.ranking-item video {
+.ranking-item img {
   width: 80px;
   height: 80px;
   object-fit: cover;
+  border-radius: 12px;
+  border: 2px solid #333;
+}
+
+.ranking-item video {
+  width: 80px;
+  object-fit: contain;
   border-radius: 12px;
   border: 2px solid #333;
 }
