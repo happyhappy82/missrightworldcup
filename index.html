@@ -15,6 +15,47 @@ body {
   overflow-x: hidden;
 }
 
+/* ===== 탭 바 ===== */
+.tab-bar {
+  display: flex;
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 28px;
+  background: #151515;
+  border-radius: 16px;
+  padding: 5px;
+  gap: 4px;
+  border: 1px solid #222;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px 20px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: -0.5px;
+}
+
+.tab-btn:hover { color: #aaa; background: #1a1a1a; }
+
+.tab-btn.active {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.tab-btn.active-video {
+  background: linear-gradient(135deg, #48dbfb, #0abde3);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(72, 219, 251, 0.3);
+}
+
 /* ===== 업로드 화면 ===== */
 #upload-screen {
   display: flex;
@@ -37,7 +78,7 @@ body {
 #upload-screen .subtitle {
   color: #888;
   font-size: 1rem;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .upload-area {
@@ -55,6 +96,10 @@ body {
 .upload-area:hover, .upload-area.dragover {
   border-color: #ff6b6b;
   background: #1a1a1a;
+}
+
+.upload-area.video-mode:hover, .upload-area.video-mode.dragover {
+  border-color: #48dbfb;
 }
 
 .upload-area .icon { font-size: 4rem; margin-bottom: 16px; }
@@ -80,6 +125,11 @@ body {
   margin-bottom: 20px;
 }
 
+.preview-grid.video-grid {
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+
 .preview-item {
   position: relative;
   aspect-ratio: 1;
@@ -88,7 +138,12 @@ body {
   border: 2px solid #222;
 }
 
-.preview-item img { width: 100%; height: 100%; object-fit: cover; }
+.preview-item img,
+.preview-item video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .preview-item .remove-btn {
   position: absolute;
@@ -106,6 +161,7 @@ body {
   align-items: center;
   justify-content: center;
   line-height: 1;
+  z-index: 2;
 }
 
 .preview-item .photo-number {
@@ -117,6 +173,18 @@ body {
   font-size: 11px;
   padding: 2px 6px;
   border-radius: 8px;
+  z-index: 2;
+}
+
+.preview-item .video-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5rem;
+  z-index: 2;
+  pointer-events: none;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.7);
 }
 
 /* 설정 */
@@ -143,6 +211,7 @@ body {
 }
 
 .settings input[type="text"]:focus { border-color: #ff6b6b; }
+.settings input[type="text"].video-focus:focus { border-color: #48dbfb; }
 
 .round-select-area {
   display: flex;
@@ -166,6 +235,9 @@ body {
 .round-option:hover { border-color: #ff6b6b; color: #fff; }
 .round-option.active { border-color: #feca57; color: #feca57; background: #1a1600; }
 
+.round-option.video-mode:hover { border-color: #48dbfb; color: #fff; }
+.round-option.video-mode.active { border-color: #48dbfb; color: #48dbfb; background: #001a20; }
+
 .start-btn {
   width: 100%;
   max-width: 600px;
@@ -182,9 +254,17 @@ body {
   margin-top: 10px;
 }
 
+.start-btn.video-mode {
+  background: linear-gradient(135deg, #48dbfb, #0abde3);
+}
+
 .start-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 30px rgba(255, 107, 107, 0.4);
+}
+
+.start-btn.video-mode:hover {
+  box-shadow: 0 8px 30px rgba(72, 219, 251, 0.4);
 }
 
 /* ===== 게임 화면 ===== */
@@ -214,6 +294,12 @@ body {
   background-clip: text;
 }
 
+.round-info .round-title.video-gradient {
+  background: linear-gradient(135deg, #48dbfb, #0abde3);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
 .round-info .match-count { color: #888; font-size: 0.95rem; margin-top: 4px; }
 
 /* 진행바 */
@@ -232,6 +318,10 @@ body {
   background: linear-gradient(90deg, #ff6b6b, #feca57);
   border-radius: 3px;
   transition: width 0.5s ease;
+}
+
+.progress-bar.video-gradient {
+  background: linear-gradient(90deg, #48dbfb, #0abde3);
 }
 
 /* VS 배틀 */
@@ -274,7 +364,8 @@ body {
   overflow: hidden;
 }
 
-.contestant img {
+.contestant img,
+.contestant video {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -294,6 +385,32 @@ body {
   font-size: 0.85rem;
   font-weight: 600;
   backdrop-filter: blur(10px);
+  z-index: 2;
+}
+
+/* ===== 동영상 모드 - 정방형 큼지막하게 ===== */
+.battle-container.video-mode {
+  max-width: 1100px;
+  align-items: center;
+}
+
+.battle-container.video-mode .contestant {
+  max-width: 500px;
+}
+
+.battle-container.video-mode .contestant:hover {
+  border-color: #48dbfb;
+}
+
+.battle-container.video-mode .contestant.selected {
+  border-color: #48dbfb;
+  box-shadow: 0 0 50px rgba(72, 219, 251, 0.4);
+}
+
+.battle-container.video-mode .contestant .image-wrap {
+  aspect-ratio: 1;
+  min-height: unset;
+  flex: none;
 }
 
 .vs-divider {
@@ -305,6 +422,11 @@ body {
   color: #ff6b6b;
   text-shadow: 0 0 20px rgba(255,107,107,0.5);
   min-width: 50px;
+}
+
+.battle-container.video-mode .vs-divider {
+  color: #48dbfb;
+  text-shadow: 0 0 20px rgba(72,219,251,0.5);
 }
 
 /* ===== 결과 화면 ===== */
@@ -332,7 +454,7 @@ body {
   font-weight: 700;
 }
 
-.winner-image-wrap {
+.winner-media-wrap {
   width: 100%;
   max-width: 450px;
   aspect-ratio: 3/4;
@@ -344,7 +466,19 @@ body {
   position: relative;
 }
 
-.winner-image-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.winner-media-wrap.video-mode {
+  aspect-ratio: 1;
+  max-width: 500px;
+  border-color: #48dbfb;
+  box-shadow: 0 0 60px rgba(72,219,251,0.3);
+}
+
+.winner-media-wrap img,
+.winner-media-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .winner-number {
   font-size: 1.5rem;
@@ -372,7 +506,8 @@ body {
 .ranking-item { text-align: center; }
 .ranking-item .rank { font-size: 0.8rem; color: #aaa; margin-bottom: 4px; }
 
-.ranking-item img {
+.ranking-item img,
+.ranking-item video {
   width: 80px;
   height: 80px;
   object-fit: cover;
@@ -380,7 +515,8 @@ body {
   border: 2px solid #333;
 }
 
-.ranking-item:first-child img { border-color: #c0c0c0; }
+.ranking-item:first-child img,
+.ranking-item:first-child video { border-color: #c0c0c0; }
 
 .result-buttons { display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
 
@@ -395,6 +531,7 @@ body {
 }
 
 .btn-primary { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: #fff; }
+.btn-primary.video-mode { background: linear-gradient(135deg, #48dbfb, #0abde3); }
 .btn-secondary { background: #222; color: #fff; border: 2px solid #333; }
 .btn:hover { transform: translateY(-2px); }
 
@@ -435,15 +572,22 @@ body {
 /* 모바일 */
 @media (max-width: 768px) {
   #upload-screen h1 { font-size: 1.8rem; }
+  .tab-bar { max-width: 100%; }
+  .tab-btn { font-size: 0.95rem; padding: 12px 14px; }
   .battle-container { flex-direction: column; }
+  .battle-container.video-mode { max-width: 100%; }
+  .battle-container.video-mode .contestant { max-width: 100%; }
   .vs-divider { min-width: auto; min-height: 30px; font-size: 1.5rem; }
   .contestant .image-wrap { min-height: 200px; }
+  .battle-container.video-mode .contestant .image-wrap { min-height: unset; }
   .round-info .round-title { font-size: 1.5rem; }
   .preview-grid { grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); }
+  .preview-grid.video-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
 }
 
 @media (max-width: 480px) {
   .contestant .image-wrap { min-height: 150px; }
+  .battle-container.video-mode .contestant .image-wrap { min-height: unset; }
 }
 </style>
 </head>
@@ -454,15 +598,21 @@ body {
   <h1>🏆 패션 월드컵</h1>
   <p class="subtitle">이상형 월드컵 토너먼트</p>
 
+  <!-- 탭 바 -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-photo" onclick="switchTab('photo')">📸 사진</button>
+    <button class="tab-btn" id="tab-video" onclick="switchTab('video')">🎬 동영상</button>
+  </div>
+
   <div class="upload-area" id="upload-area">
-    <div class="icon">📸</div>
-    <p>사진을 드래그하거나 클릭해서 업로드</p>
-    <p class="hint">2장 이상 업로드하세요</p>
+    <div class="icon" id="upload-icon">📸</div>
+    <p id="upload-text">사진을 드래그하거나 클릭해서 업로드</p>
+    <p class="hint" id="upload-hint">2장 이상 업로드하세요</p>
   </div>
   <input type="file" id="file-input" multiple accept="image/*">
 
   <div class="preview-section" id="preview-section">
-    <h3>업로드된 사진: <span id="photo-count">0</span>장</h3>
+    <h3>업로드된 <span id="media-type-label">사진</span>: <span id="photo-count">0</span>개</h3>
     <div class="preview-grid" id="preview-grid"></div>
   </div>
 
@@ -490,15 +640,17 @@ body {
 
   <div class="battle-container" id="battle-container">
     <div class="contestant" id="contestant-left" onclick="pick(0)">
-      <div class="image-wrap">
+      <div class="image-wrap" id="wrap-left">
         <img id="img-left" src="" alt="">
+        <video id="vid-left" autoplay loop muted playsinline style="display:none"></video>
         <div class="number-badge" id="badge-left"></div>
       </div>
     </div>
     <div class="vs-divider">VS</div>
     <div class="contestant" id="contestant-right" onclick="pick(1)">
-      <div class="image-wrap">
+      <div class="image-wrap" id="wrap-right">
         <img id="img-right" src="" alt="">
+        <video id="vid-right" autoplay loop muted playsinline style="display:none"></video>
         <div class="number-badge" id="badge-right"></div>
       </div>
     </div>
@@ -509,8 +661,9 @@ body {
 <div id="result-screen">
   <div class="result-game-title" id="result-game-title"></div>
   <div class="winner-label">👑 우 승</div>
-  <div class="winner-image-wrap bounce-in">
+  <div class="winner-media-wrap bounce-in" id="winner-media-wrap">
     <img id="winner-img" src="" alt="">
+    <video id="winner-vid" autoplay loop muted playsinline style="display:none"></video>
   </div>
   <div class="winner-number" id="winner-number"></div>
 
@@ -520,24 +673,64 @@ body {
   </div>
 
   <div class="result-buttons">
-    <button class="btn btn-primary" onclick="restartSamePhotos()">🔄 다시하기</button>
-    <button class="btn btn-secondary" onclick="resetAll()">📸 새 사진</button>
+    <button class="btn btn-primary" id="btn-restart" onclick="restartSamePhotos()">🔄 다시하기</button>
+    <button class="btn btn-secondary" onclick="resetAll()">📸 새로 시작</button>
   </div>
 </div>
 
 <script>
-// ===== 상태 =====
-let photos = [];          // { src, index }
-let matches = [];         // 현재 라운드의 매치들: [[a,b], [a,b], ...]
-let nextRoundPlayers = [];// 다음 라운드 진출자
-let matchIdx = 0;         // 현재 매치
+// ===== 모드 & 상태 =====
+let currentMode = 'photo'; // 'photo' | 'video'
+let photoData = [];         // { src, index }
+let videoData = [];         // { src (blob URL), index }
+
+let matches = [];
+let nextRoundPlayers = [];
+let matchIdx = 0;
 let totalMatchesInRound = 0;
-let bracketSize = 0;      // 전체 브라켓 크기 (32, 16, 8 등)
-let currentRoundNum = 0;  // 현재 강 숫자 (32, 16, 8, 4, 2)
-let semiLosers = [];      // 4강 탈락자 (공동 3위)
-let finalistPair = null;  // 결승 페어 저장
-let isPicking = false;    // 중복 클릭 방지
-let selectedBracket = 0;  // 사용자가 선택한 강 수
+let bracketSize = 0;
+let currentRoundNum = 0;
+let semiLosers = [];
+let finalistPair = null;
+let isPicking = false;
+let selectedBracket = 0;
+
+function getCurrentItems() {
+  return currentMode === 'photo' ? photoData : videoData;
+}
+
+// ===== 탭 전환 =====
+function switchTab(mode) {
+  currentMode = mode;
+  const tabPhoto = document.getElementById('tab-photo');
+  const tabVideo = document.getElementById('tab-video');
+  const uploadArea = document.getElementById('upload-area');
+  const fileInput = document.getElementById('file-input');
+  const titleInput = document.getElementById('title-input');
+
+  tabPhoto.className = 'tab-btn' + (mode === 'photo' ? ' active' : '');
+  tabVideo.className = 'tab-btn' + (mode === 'video' ? ' active-video' : '');
+
+  if (mode === 'photo') {
+    document.getElementById('upload-icon').textContent = '📸';
+    document.getElementById('upload-text').textContent = '사진을 드래그하거나 클릭해서 업로드';
+    document.getElementById('upload-hint').textContent = '2장 이상 업로드하세요';
+    document.getElementById('media-type-label').textContent = '사진';
+    fileInput.accept = 'image/*';
+    uploadArea.classList.remove('video-mode');
+    titleInput.classList.remove('video-focus');
+  } else {
+    document.getElementById('upload-icon').textContent = '🎬';
+    document.getElementById('upload-text').textContent = '동영상을 드래그하거나 클릭해서 업로드';
+    document.getElementById('upload-hint').textContent = '2개 이상 업로드하세요 (mp4, webm, mov)';
+    document.getElementById('media-type-label').textContent = '동영상';
+    fileInput.accept = 'video/*';
+    uploadArea.classList.add('video-mode');
+    titleInput.classList.add('video-focus');
+  }
+
+  updatePreview();
+}
 
 // ===== 업로드 =====
 const uploadArea = document.getElementById('upload-area');
@@ -546,18 +739,30 @@ const fileInput = document.getElementById('file-input');
 uploadArea.addEventListener('click', () => fileInput.click());
 uploadArea.addEventListener('dragover', (e) => { e.preventDefault(); uploadArea.classList.add('dragover'); });
 uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('dragover'));
-uploadArea.addEventListener('drop', (e) => { e.preventDefault(); uploadArea.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+uploadArea.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadArea.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
 fileInput.addEventListener('change', (e) => { handleFiles(e.target.files); fileInput.value = ''; });
 
 function handleFiles(files) {
-  Array.from(files).filter(f => f.type.startsWith('image/')).forEach(file => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      photos.push({ src: e.target.result, index: photos.length + 1 });
+  if (currentMode === 'photo') {
+    Array.from(files).filter(f => f.type.startsWith('image/')).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        photoData.push({ src: e.target.result, index: photoData.length + 1, type: 'photo' });
+        updatePreview();
+      };
+      reader.readAsDataURL(file);
+    });
+  } else {
+    Array.from(files).filter(f => f.type.startsWith('video/')).forEach(file => {
+      const src = URL.createObjectURL(file);
+      videoData.push({ src, index: videoData.length + 1, type: 'video' });
       updatePreview();
-    };
-    reader.readAsDataURL(file);
-  });
+    });
+  }
 }
 
 function updatePreview() {
@@ -566,8 +771,9 @@ function updatePreview() {
   const count = document.getElementById('photo-count');
   const settingsEl = document.getElementById('settings');
   const btn = document.getElementById('start-btn');
+  const items = getCurrentItems();
 
-  if (photos.length === 0) {
+  if (items.length === 0) {
     section.style.display = 'none';
     settingsEl.style.display = 'none';
     btn.style.display = 'none';
@@ -575,23 +781,36 @@ function updatePreview() {
   }
 
   section.style.display = 'block';
-  count.textContent = photos.length;
+  count.textContent = items.length;
 
+  grid.className = 'preview-grid' + (currentMode === 'video' ? ' video-grid' : '');
   grid.innerHTML = '';
-  photos.forEach((photo, i) => {
-    const item = document.createElement('div');
-    item.className = 'preview-item';
-    item.innerHTML = `
-      <img src="${photo.src}" alt="${photo.index}번">
-      <span class="photo-number">${photo.index}</span>
-      <button class="remove-btn" onclick="removePhoto(${i})">×</button>
-    `;
-    grid.appendChild(item);
+
+  items.forEach((item, i) => {
+    const el = document.createElement('div');
+    el.className = 'preview-item';
+
+    if (item.type === 'video') {
+      el.innerHTML = `
+        <video src="${item.src}" muted preload="auto"></video>
+        <span class="video-icon">▶</span>
+        <span class="photo-number">${item.index}</span>
+        <button class="remove-btn" onclick="removeItem(${i})">×</button>
+      `;
+    } else {
+      el.innerHTML = `
+        <img src="${item.src}" alt="${item.index}번">
+        <span class="photo-number">${item.index}</span>
+        <button class="remove-btn" onclick="removeItem(${i})">×</button>
+      `;
+    }
+    grid.appendChild(el);
   });
 
-  if (photos.length >= 2) {
+  if (items.length >= 2) {
     settingsEl.style.display = 'block';
     btn.style.display = 'block';
+    btn.className = 'start-btn' + (currentMode === 'video' ? ' video-mode' : '');
     updateRoundOptions();
   } else {
     settingsEl.style.display = 'none';
@@ -602,47 +821,50 @@ function updatePreview() {
 function updateRoundOptions() {
   const area = document.getElementById('round-select-area');
   area.innerHTML = '';
+  const items = getCurrentItems();
+  const n = items.length;
 
-  const n = photos.length;
-  // 가능한 라운드: 2의 거듭제곱 중 n 이하인 것들 + n 이상의 최소 거듭제곱
   const options = [];
   let p = 2;
   while (p <= 128) {
     if (p <= n) options.push(p);
     p *= 2;
   }
-  // n 자체가 2의 거듭제곱이 아니면 올림한 것도 추가
   let ceil = 2;
   while (ceil < n) ceil *= 2;
   if (!options.includes(ceil) && ceil <= 128) options.push(ceil);
 
-  // 최소 4개 이상이면 "전체" 옵션 (가장 큰 값)
   const maxOption = Math.max(...options);
 
   options.forEach(opt => {
     const btn = document.createElement('div');
-    btn.className = 'round-option';
+    btn.className = 'round-option' + (currentMode === 'video' ? ' video-mode' : '');
     btn.textContent = opt + '강';
     btn.dataset.value = opt;
     btn.onclick = () => selectRound(opt);
     area.appendChild(btn);
   });
 
-  // 기본 선택: 가장 큰 라운드 (전체)
   selectRound(maxOption);
 }
 
 function selectRound(val) {
   selectedBracket = val;
   document.querySelectorAll('.round-option').forEach(el => {
-    el.classList.toggle('active', parseInt(el.dataset.value) === val);
+    const isActive = parseInt(el.dataset.value) === val;
+    el.classList.toggle('active', isActive);
   });
-  document.getElementById('start-btn').textContent = `🏆 ${val}강 월드컵 시작!`;
+  const emoji = currentMode === 'video' ? '🎬' : '🏆';
+  document.getElementById('start-btn').textContent = `${emoji} ${val}강 월드컵 시작!`;
 }
 
-function removePhoto(idx) {
-  photos.splice(idx, 1);
-  photos.forEach((p, i) => p.index = i + 1);
+function removeItem(idx) {
+  const items = getCurrentItems();
+  if (items[idx] && items[idx].type === 'video') {
+    URL.revokeObjectURL(items[idx].src);
+  }
+  items.splice(idx, 1);
+  items.forEach((p, i) => p.index = i + 1);
   updatePreview();
 }
 
@@ -658,7 +880,8 @@ function shuffle(arr) {
 }
 
 function startGame() {
-  if (photos.length < 2) return;
+  const items = getCurrentItems();
+  if (items.length < 2) return;
 
   const title = document.getElementById('title-input').value;
   document.getElementById('game-title').textContent = title || '';
@@ -668,30 +891,37 @@ function startGame() {
   finalistPair = null;
   isPicking = false;
 
-  // 참가자 수 결정
-  let players = shuffle([...photos]);
+  // 동영상 모드 스타일 적용
+  const battleContainer = document.getElementById('battle-container');
+  const roundTitle = document.getElementById('round-title');
+  const progressBar = document.getElementById('progress-bar');
 
-  // 선택한 강 수에 맞게 참가자 수 조정
+  if (currentMode === 'video') {
+    battleContainer.classList.add('video-mode');
+    roundTitle.classList.add('video-gradient');
+    progressBar.classList.add('video-gradient');
+  } else {
+    battleContainer.classList.remove('video-mode');
+    roundTitle.classList.remove('video-gradient');
+    progressBar.classList.remove('video-gradient');
+  }
+
+  let players = shuffle([...items]);
+
   if (selectedBracket < players.length) {
-    // 랜덤으로 selectedBracket명만 선택
     players = players.slice(0, selectedBracket);
   }
 
   bracketSize = selectedBracket;
 
-  // 부전승 계산
   const byeCount = bracketSize - players.length;
 
   if (byeCount === 0) {
-    // 부전승 없음 - 바로 매치
     currentRoundNum = bracketSize;
     setupRound(players);
   } else {
-    // 부전승 있음
-    // 앞쪽 byeCount명은 자동 진출, 나머지는 첫 라운드 플레이
     const byePlayers = players.slice(0, byeCount);
     const playingPlayers = players.slice(byeCount);
-
     currentRoundNum = bracketSize;
     nextRoundPlayers = [...byePlayers];
     setupMatches(playingPlayers);
@@ -701,14 +931,10 @@ function startGame() {
 }
 
 function setupRound(players) {
-  // players 배열을 페어링해서 매치 생성
   nextRoundPlayers = [];
-
-  // 홀수면 마지막 한 명은 부전승
   if (players.length % 2 === 1) {
     nextRoundPlayers.push(players.pop());
   }
-
   setupMatches(players);
 }
 
@@ -749,10 +975,33 @@ function showCurrentMatch() {
 
   contLeft.classList.remove('selected', 'slide-left', 'picking-disabled');
   contRight.classList.remove('selected', 'slide-right', 'picking-disabled');
-  void contLeft.offsetWidth; // 리플로우
+  void contLeft.offsetWidth;
 
-  document.getElementById('img-left').src = left.src;
-  document.getElementById('img-right').src = right.src;
+  const imgLeft = document.getElementById('img-left');
+  const imgRight = document.getElementById('img-right');
+  const vidLeft = document.getElementById('vid-left');
+  const vidRight = document.getElementById('vid-right');
+
+  if (currentMode === 'video') {
+    imgLeft.style.display = 'none';
+    imgRight.style.display = 'none';
+    vidLeft.style.display = 'block';
+    vidRight.style.display = 'block';
+    vidLeft.src = left.src;
+    vidRight.src = right.src;
+    vidLeft.load();
+    vidRight.load();
+    vidLeft.play().catch(() => {});
+    vidRight.play().catch(() => {});
+  } else {
+    imgLeft.style.display = 'block';
+    imgRight.style.display = 'block';
+    vidLeft.style.display = 'none';
+    vidRight.style.display = 'none';
+    imgLeft.src = left.src;
+    imgRight.src = right.src;
+  }
+
   document.getElementById('badge-left').textContent = `#${left.index}`;
   document.getElementById('badge-right').textContent = `#${right.index}`;
 
@@ -770,19 +1019,16 @@ function pick(side) {
   const winner = side === 0 ? a : b;
   const loser = side === 0 ? b : a;
 
-  // 선택 효과
   const contId = side === 0 ? 'contestant-left' : 'contestant-right';
   const otherId = side === 0 ? 'contestant-right' : 'contestant-left';
   document.getElementById(contId).classList.add('selected');
   document.getElementById(contId).classList.add('picking-disabled');
   document.getElementById(otherId).classList.add('picking-disabled');
 
-  // 4강이면 탈락자 기록
   if (currentRoundNum === 4) {
     semiLosers.push(loser);
   }
 
-  // 결승 페어 기록
   if (currentRoundNum === 2) {
     finalistPair = [a, b];
   }
@@ -801,10 +1047,7 @@ function endRound() {
     return;
   }
 
-  // 다음 라운드
   currentRoundNum = advancing.length;
-  // 가장 가까운 2의 거듭제곱 이하로 맞추기
-  // 실제로는 advancing.length가 정확히 다음 라운드 수
   if (advancing.length === 2) currentRoundNum = 2;
   else if (advancing.length <= 4) currentRoundNum = 4;
   else if (advancing.length <= 8) currentRoundNum = 8;
@@ -819,7 +1062,27 @@ function endRound() {
 function showWinner(winner) {
   showScreen('result');
 
-  document.getElementById('winner-img').src = winner.src;
+  const winnerWrap = document.getElementById('winner-media-wrap');
+  const winnerImg = document.getElementById('winner-img');
+  const winnerVid = document.getElementById('winner-vid');
+  const btnRestart = document.getElementById('btn-restart');
+
+  if (currentMode === 'video') {
+    winnerWrap.classList.add('video-mode');
+    winnerImg.style.display = 'none';
+    winnerVid.style.display = 'block';
+    winnerVid.src = winner.src;
+    winnerVid.load();
+    winnerVid.play().catch(() => {});
+    btnRestart.classList.add('video-mode');
+  } else {
+    winnerWrap.classList.remove('video-mode');
+    winnerImg.style.display = 'block';
+    winnerVid.style.display = 'none';
+    winnerImg.src = winner.src;
+    btnRestart.classList.remove('video-mode');
+  }
+
   document.getElementById('winner-number').textContent = `#${winner.index}번`;
 
   const rankingList = document.getElementById('ranking-list');
@@ -830,7 +1093,11 @@ function showWinner(winner) {
     const runnerUp = finalistPair[0] === winner ? finalistPair[1] : finalistPair[0];
     const item = document.createElement('div');
     item.className = 'ranking-item';
-    item.innerHTML = `<div class="rank">🥈 준우승</div><img src="${runnerUp.src}" alt="#${runnerUp.index}">`;
+    if (currentMode === 'video') {
+      item.innerHTML = `<div class="rank">🥈 준우승</div><video src="${runnerUp.src}" autoplay loop muted playsinline></video>`;
+    } else {
+      item.innerHTML = `<div class="rank">🥈 준우승</div><img src="${runnerUp.src}" alt="#${runnerUp.index}">`;
+    }
     rankingList.appendChild(item);
   }
 
@@ -838,7 +1105,11 @@ function showWinner(winner) {
   semiLosers.forEach(loser => {
     const item = document.createElement('div');
     item.className = 'ranking-item';
-    item.innerHTML = `<div class="rank">🥉 3위</div><img src="${loser.src}" alt="#${loser.index}">`;
+    if (currentMode === 'video') {
+      item.innerHTML = `<div class="rank">🥉 3위</div><video src="${loser.src}" autoplay loop muted playsinline></video>`;
+    } else {
+      item.innerHTML = `<div class="rank">🥉 3위</div><img src="${loser.src}" alt="#${loser.index}">`;
+    }
     rankingList.appendChild(item);
   });
 
@@ -848,7 +1119,10 @@ function showWinner(winner) {
 }
 
 function launchConfetti() {
-  const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#55efc4', '#a29bfe'];
+  const colors = currentMode === 'video'
+    ? ['#48dbfb', '#0abde3', '#a29bfe', '#55efc4', '#feca57', '#ff9ff3']
+    : ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#55efc4', '#a29bfe'];
+
   for (let i = 0; i < 60; i++) {
     const el = document.createElement('div');
     el.className = 'confetti';
@@ -868,7 +1142,10 @@ function launchConfetti() {
 function restartSamePhotos() { startGame(); }
 
 function resetAll() {
-  photos = [];
+  // 비디오 blob URL 정리
+  videoData.forEach(v => URL.revokeObjectURL(v.src));
+  photoData = [];
+  videoData = [];
   updatePreview();
   document.getElementById('title-input').value = '';
   showScreen('upload');
@@ -879,6 +1156,18 @@ function showScreen(name) {
   document.getElementById('game-screen').style.display = name === 'game' ? 'flex' : 'none';
   document.getElementById('result-screen').style.display = name === 'result' ? 'flex' : 'none';
   window.scrollTo(0, 0);
+
+  // 게임/결과 화면 떠나면 비디오 일시정지
+  if (name !== 'game') {
+    const vidL = document.getElementById('vid-left');
+    const vidR = document.getElementById('vid-right');
+    if (vidL) vidL.pause();
+    if (vidR) vidR.pause();
+  }
+  if (name !== 'result') {
+    const winVid = document.getElementById('winner-vid');
+    if (winVid) winVid.pause();
+  }
 }
 </script>
 </body>
